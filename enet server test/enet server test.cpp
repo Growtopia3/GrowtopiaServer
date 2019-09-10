@@ -609,7 +609,7 @@ string PlayerDB::fixColors(string text) {
 }
 
 int PlayerDB::playerLogin(ENetPeer* peer, string username, string password) {
-	std::ifstream ifs("players/" + PlayerDB::getProperName(username) + ".json");
+	std::ifstream ifs("players/__" + PlayerDB::getProperName(username) + ".json");
 	if (ifs.is_open()) {
 		json j;
 		ifs >> j;
@@ -660,18 +660,17 @@ int PlayerDB::playerLogin(ENetPeer* peer, string username, string password) {
 
 int PlayerDB::playerRegister(string username, string password, string passwordverify, string email, string discord) {
     string name = username;
-    if (name == "CON" || name == "PRN" || name == "AUX" || name == "NUL" || name == "COM1" || name == "COM2" || name == "COM3" || name == "COM4" || name == "COM5" || name == "COM6" || name == "COM7" || name == "COM8" || name == "COM9" || name == "LPT1" || name == "LPT2" || name == "LPT3" || name == "LPT4" || name == "LPT5" || name == "LPT6" || name == "LPT7" || name == "LPT8" || name == "LPT9") return -1;
     username = PlayerDB::getProperName(username);
     if (discord.find("#") == std::string::npos && discord.length() != 0) return -5;
     if (email.find("@") == std::string::npos && email.length() != 0) return -4;
     if (passwordverify != password) return -3;
     if (username.length() < 3) return -2;
-    std::ifstream ifs("players/" + username + ".json");
+    std::ifstream ifs("players/__" + username + ".json");
     if (ifs.is_open()) {
         return -1;
     }
 	
-	std::ofstream o("players/" + username + ".json");
+	std::ofstream o("players/__" + username + ".json");
 	if (!o.is_open()) {
 		cout << GetLastError() << endl;
 		_getch();
@@ -746,7 +745,7 @@ AWorld WorldDB::get2(string name) {
 	if (name == "EXIT") {
 		throw 3;
 	}
-	if (name == "CON" || name == "PRN" || name == "AUX" || name == "NUL" || name == "COM1" || name == "COM2" || name == "COM3" || name == "COM4" || name == "COM5" || name == "COM6" || name == "COM7" || name == "COM8" || name == "COM9" || name == "LPT1" || name == "LPT2" || name == "LPT3" || name == "LPT4" || name == "LPT5" || name == "LPT6" || name == "LPT7" || name == "LPT8" || name == "LPT9") throw 3;
+	
 	for (int i = 0; i < worlds.size(); i++) {
 		if (worlds.at(i).name == name)
 		{
@@ -757,7 +756,7 @@ AWorld WorldDB::get2(string name) {
 		}
 
 	}
-	std::ifstream ifs("worlds/" + name + ".json");
+	std::ifstream ifs("worlds/__" + name + ".json");
 	if (ifs.is_open()) {
 
 		json j;
@@ -800,7 +799,7 @@ WorldInfo WorldDB::get(string name) {
 
 void WorldDB::flush(WorldInfo info)
 {
-	std::ofstream o("worlds/" + info.name + ".json");
+	std::ofstream o("worlds/__" + info.name + ".json");
 	if (!o.is_open()) {
 		cout << GetLastError() << endl;
 	}
